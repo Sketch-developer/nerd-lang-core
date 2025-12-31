@@ -106,9 +106,11 @@ install_nerd() {
 
     if [ "$VERSION" = "latest" ]; then
         info "Fetching latest release..."
-        VERSION=$(curl -fsSL "https://api.github.com/repos/$REPO/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+        VERSION=$(curl -fsSL "https://api.github.com/repos/$REPO/releases/latest" 2>/dev/null | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
         if [ -z "$VERSION" ]; then
-            error "Could not determine latest version. Building from source instead."
+            warn "No releases found yet"
+            install_from_source
+            return
         fi
     fi
 
@@ -130,10 +132,7 @@ install_nerd() {
         info "Installed to $BIN_DIR/nerd"
     else
         warn "Pre-built binary not available for $TARGET"
-        echo ""
-        echo "Building from source instead..."
         install_from_source
-        return
     fi
 }
 

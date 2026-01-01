@@ -84,50 +84,37 @@ ret err "unknown operation"
 | TypeScript | 96 | 135 | 59-67% |
 | Java | 77 | 273 | 58-80% |
 
-## Installation
-
-### macOS (Apple Silicon)
+## Quick Start (macOS Apple Silicon)
 
 ```bash
+# Install
 curl -L https://raw.githubusercontent.com/Nerd-Lang/nerd-lang-core/main/bin/nerd-darwin-arm64 -o nerd
 chmod +x nerd
-sudo mv nerd /usr/local/bin/
+
+# Write a program
+echo 'fn add a b
+ret a plus b
+
+fn mul a b
+ret a times b' > math.nerd
+
+# Run it
+./nerd run math.nerd
+# Output:
+# add = 8
+# mul = 15
 ```
 
-### Build from Source (other platforms)
+## Build from Source
 
 ```bash
 git clone https://github.com/Nerd-Lang/nerd-lang-core.git
 cd nerd-lang-core/bootstrap
 make
+./nerd --version
 ```
 
 Requires: C compiler and clang (`xcode-select --install` on macOS)
-
-### Verify
-
-```bash
-nerd --version
-```
-
-## Quick Start
-
-```bash
-# Create a simple NERD program
-cat > hello.nerd << 'EOF'
-fn add a b
-ret a plus b
-
-fn mul a b
-ret a times b
-EOF
-
-# Compile to LLVM IR
-nerd compile hello.nerd -o hello.ll
-
-# Build native binary (requires a main function - see examples/)
-clang -O2 hello.ll -o hello
-```
 
 ### Run the Examples
 

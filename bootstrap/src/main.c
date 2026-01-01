@@ -232,6 +232,7 @@ static void print_usage(void) {
     printf("NERD Compiler v%s - No Effort Required, Done\n", NERD_VERSION);
     printf("\n");
     printf("Usage:\n");
+    printf("  nerd run <file.nerd>                      Compile and run\n");
     printf("  nerd compile <file.nerd> [-o output.ll]   Compile to LLVM IR\n");
     printf("  nerd parse <file.nerd>                    Parse and dump AST\n");
     printf("  nerd tokens <file.nerd>                   Show tokens\n");
@@ -239,9 +240,8 @@ static void print_usage(void) {
     printf("  nerd --help                               Show this help\n");
     printf("\n");
     printf("Examples:\n");
+    printf("  nerd run math.nerd\n");
     printf("  nerd compile math.nerd -o math.ll\n");
-    printf("  clang math.ll -o math                     # Link to native\n");
-    printf("  ./math\n");
 }
 
 /*
@@ -388,6 +388,170 @@ static int cmd_parse(int argc, char **argv) {
 }
 
 /*
+ * Run command - compile and execute
+ */
+static int cmd_run(int argc, char **argv) {
+    const char *input_file = NULL;
+
+    for (int i = 0; i < argc; i++) {
+        if (argv[i][0] != '-') {
+            input_file = argv[i];
+            break;
+        }
+    }
+
+    if (!input_file) {
+        fprintf(stderr, "Error: No input file specified\n");
+        return 1;
+    }
+
+    // Read source
+    size_t source_len;
+    char *source = read_file(input_file, &source_len);
+    if (!source) return 1;
+
+    // Lex
+    Lexer *lexer = lexer_create(source, source_len);
+    if (!lexer || !lexer_tokenize(lexer)) {
+        free(source);
+        return 1;
+    }
+
+    // Parse
+    Parser *parser = parser_create(lexer->tokens, lexer->token_count);
+    if (!parser) {
+        lexer_free(lexer);
+        free(source);
+        return 1;
+    }
+
+    ASTNode *ast = parser_parse(parser);
+    if (!ast) {
+        parser_free(parser);
+        lexer_free(lexer);
+        free(source);
+        return 1;
+    }
+
+    // Generate code to temp file
+    const char *tmp_ll = "/tmp/nerd_out.ll";
+    const char *tmp_main = "/tmp/nerd_main.ll";
+    const char *tmp_combined = "/tmp/nerd_combined.ll";
+    const char *tmp_bin = "/tmp/nerd_run";
+
+    NerdContext ctx = {0};
+    ctx.filename = input_file;
+    ctx.source = source;
+    ctx.ast = ast;
+
+    if (!codegen_llvm(&ctx, tmp_ll)) {
+        fprintf(stderr, "Error: %s\n", ctx.error_msg);
+        ast_free(ast);
+        parser_free(parser);
+        lexer_free(lexer);
+        free(source);
+        return 1;
+    }
+
+    // Generate main() wrapper that calls each function
+    FILE *main_file = fopen(tmp_main, "w");
+    if (!main_file) {
+        fprintf(stderr, "Error: Cannot create temp file\n");
+        ast_free(ast);
+        parser_free(parser);
+        lexer_free(lexer);
+        free(source);
+        return 1;
+    }
+
+    fprintf(main_file, "; Auto-generated main for nerd run\n\n");
+    fprintf(main_file, "@.fmt = private constant [11 x i8] c\"%%s = %%.0f\\0A\\00\"\n");
+    fprintf(main_file, "declare i32 @printf(i8*, ...)\n\n");
+
+    // Generate function name strings
+    ASTNode *program = ast;
+    size_t func_count = program->data.program.functions.count;
+
+    for (size_t i = 0; i < func_count; i++) {
+        ASTNode *func = program->data.program.functions.nodes[i];
+        const char *name = func->data.func_def.name;
+        fprintf(main_file, "@.name%zu = private constant [%zu x i8] c\"%s\\00\"\n", 
+                i, strlen(name) + 1, name);
+    }
+
+    fprintf(main_file, "\ndefine i32 @main() {\n");
+    fprintf(main_file, "entry:\n");
+
+    // Call each function and print result
+    for (size_t i = 0; i < func_count; i++) {
+        ASTNode *func = program->data.program.functions.nodes[i];
+        const char *name = func->data.func_def.name;
+        size_t param_count = func->data.func_def.params.count;
+        
+        // Call function with test args (5, 3, 1, 1, ...)
+        fprintf(main_file, "  %%r%zu = call double @%s(", i, name);
+        for (size_t j = 0; j < param_count; j++) {
+            if (j > 0) fprintf(main_file, ", ");
+            if (j == 0) fprintf(main_file, "double 5.0");
+            else if (j == 1) fprintf(main_file, "double 3.0");
+            else fprintf(main_file, "double 1.0");
+        }
+        fprintf(main_file, ")\n");
+        
+        // Get pointers
+        fprintf(main_file, "  %%fmt%zu = getelementptr [11 x i8], [11 x i8]* @.fmt, i32 0, i32 0\n", i);
+        fprintf(main_file, "  %%nm%zu = getelementptr [%zu x i8], [%zu x i8]* @.name%zu, i32 0, i32 0\n", 
+                i, strlen(name) + 1, strlen(name) + 1, i);
+        
+        // Print
+        fprintf(main_file, "  call i32 (i8*, ...) @printf(i8* %%fmt%zu, i8* %%nm%zu, double %%r%zu)\n", i, i, i);
+    }
+
+    fprintf(main_file, "  ret i32 0\n");
+    fprintf(main_file, "}\n");
+    fclose(main_file);
+
+    // Combine files
+    char cmd[512];
+    snprintf(cmd, sizeof(cmd), "cat %s %s > %s", tmp_ll, tmp_main, tmp_combined);
+    if (system(cmd) != 0) {
+        fprintf(stderr, "Error: Failed to combine files\n");
+        ast_free(ast);
+        parser_free(parser);
+        lexer_free(lexer);
+        free(source);
+        return 1;
+    }
+
+    // Compile with clang
+    snprintf(cmd, sizeof(cmd), "clang -w %s -o %s", tmp_combined, tmp_bin);
+    if (system(cmd) != 0) {
+        fprintf(stderr, "Error: clang compilation failed. Check %s\n", tmp_combined);
+        ast_free(ast);
+        parser_free(parser);
+        lexer_free(lexer);
+        free(source);
+        return 1;
+    }
+
+    // Run
+    int result = system(tmp_bin);
+
+    // Cleanup
+    remove(tmp_ll);
+    remove(tmp_main);
+    remove(tmp_combined);
+    remove(tmp_bin);
+
+    ast_free(ast);
+    parser_free(parser);
+    lexer_free(lexer);
+    free(source);
+
+    return result;
+}
+
+/*
  * Tokens command (show tokens)
  */
 static int cmd_tokens(int argc, char **argv) {
@@ -444,7 +608,9 @@ int main(int argc, char **argv) {
 
     const char *cmd = argv[1];
 
-    if (strcmp(cmd, "compile") == 0) {
+    if (strcmp(cmd, "run") == 0) {
+        return cmd_run(argc - 2, argv + 2);
+    } else if (strcmp(cmd, "compile") == 0) {
         return cmd_compile(argc - 2, argv + 2);
     } else if (strcmp(cmd, "parse") == 0) {
         return cmd_parse(argc - 2, argv + 2);

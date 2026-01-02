@@ -106,6 +106,7 @@ static const char *token_name(TokenType type) {
         case TOK_TIME: return "TIME";
         case TOK_HTTP: return "HTTP";
         case TOK_JSON: return "JSON";
+        case TOK_MCP: return "MCP";
         case TOK_NUMBER: return "NUMBER";
         case TOK_STRING: return "STRING";
         case TOK_IDENT: return "IDENT";

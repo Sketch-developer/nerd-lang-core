@@ -1,5 +1,3 @@
--- Conditionals in NERD
-
 fn sign x
 if x gt zero ret one else if x lt zero ret neg one else ret zero
 

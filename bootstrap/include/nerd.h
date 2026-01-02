@@ -84,6 +84,7 @@ typedef enum {
     TOK_TIME,       // time module
     TOK_HTTP,       // http module
     TOK_JSON,       // json module
+    TOK_MCP,        // mcp module (Model Context Protocol)
 
     // Literals and identifiers
     TOK_NUMBER,     // numeric literal

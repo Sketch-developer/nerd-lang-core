@@ -219,7 +219,8 @@ static bool is_type_token(Parser *parser) {
 static bool is_module_token(Parser *parser) {
     TokenType t = parser_current(parser)->type;
     return t == TOK_MATH || t == TOK_STR || t == TOK_LIST ||
-           t == TOK_TIME || t == TOK_HTTP || t == TOK_JSON || t == TOK_ERR;
+           t == TOK_TIME || t == TOK_HTTP || t == TOK_JSON || t == TOK_ERR ||
+           t == TOK_MCP;
 }
 
 /*
@@ -1053,12 +1054,17 @@ static ASTNode *parse_type_def(Parser *parser) {
 }
 
 /*
- * Parse program
+ * Parse program (supports implicit main)
  */
 ASTNode *parser_parse(Parser *parser) {
     ASTNode *program = ast_create(NODE_PROGRAM, 1);
     ast_list_init(&program->data.program.types);
     ast_list_init(&program->data.program.functions);
+
+    // Collect top-level statements for implicit main
+    ASTList top_level_stmts;
+    ast_list_init(&top_level_stmts);
+    bool has_explicit_main = false;
 
     parser_skip_newlines(parser);
 
@@ -1066,6 +1072,7 @@ ASTNode *parser_parse(Parser *parser) {
         if (parser_check(parser, TOK_TYPE)) {
             ASTNode *type_def = parse_type_def(parser);
             if (!type_def) {
+                ast_list_free(&top_level_stmts);
                 ast_free(program);
                 return NULL;
             }
@@ -1073,20 +1080,43 @@ ASTNode *parser_parse(Parser *parser) {
         } else if (parser_check(parser, TOK_FN)) {
             ASTNode *func_def = parse_func_def(parser);
             if (!func_def) {
+                ast_list_free(&top_level_stmts);
                 ast_free(program);
                 return NULL;
+            }
+            if (strcmp(func_def->data.func_def.name, "main") == 0) {
+                has_explicit_main = true;
             }
             ast_list_push(&program->data.program.functions, func_def);
         } else if (parser_match(parser, TOK_NEWLINE)) {
             continue;
         } else {
-            fprintf(stderr, "Error at line %d: Unexpected token at top level\n",
-                    parser_current(parser)->line);
-            ast_free(program);
-            return NULL;
+            // Top-level statement -> implicit main
+            ASTNode *stmt = parse_stmt(parser);
+            if (!stmt) {
+                ast_list_free(&top_level_stmts);
+                ast_free(program);
+                return NULL;
+            }
+            ast_list_push(&top_level_stmts, stmt);
         }
 
         parser_skip_newlines(parser);
+    }
+
+    // Create implicit main if needed
+    if (top_level_stmts.count > 0 && !has_explicit_main) {
+        ASTNode *implicit_main = ast_create(NODE_FUNC_DEF, 1);
+        implicit_main->data.func_def.name = nerd_strdup("main");
+        ast_list_init(&implicit_main->data.func_def.params);
+        implicit_main->data.func_def.return_type = NULL;
+        implicit_main->data.func_def.body = top_level_stmts;
+        ast_list_push(&program->data.program.functions, implicit_main);
+    } else if (top_level_stmts.count > 0 && has_explicit_main) {
+        fprintf(stderr, "Error: Cannot mix top-level statements with explicit main\n");
+        ast_list_free(&top_level_stmts);
+        ast_free(program);
+        return NULL;
     }
 
     return program;

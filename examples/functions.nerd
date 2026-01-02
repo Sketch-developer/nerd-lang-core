@@ -1,5 +1,3 @@
--- Function composition in NERD
-
 fn square x
 ret x times x
 

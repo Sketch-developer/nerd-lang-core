@@ -13,12 +13,14 @@ BUILD_DIR = build
 BIN = nerd
 
 # Exclude runtime files from compiler build
-SOURCES = $(filter-out $(SRC_DIR)/nerd_http.c, $(wildcard $(SRC_DIR)/*.c))
+SOURCES = $(filter-out $(SRC_DIR)/nerd_http.c $(SRC_DIR)/nerd_mcp.c, $(wildcard $(SRC_DIR)/*.c))
 OBJECTS = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SOURCES))
 
-# Runtime library
-RUNTIME_SRC = $(SRC_DIR)/nerd_http.c
-RUNTIME_OBJ = $(BUILD_DIR)/nerd_http.o
+# Runtime libraries
+RUNTIME_HTTP_SRC = $(SRC_DIR)/nerd_http.c
+RUNTIME_HTTP_OBJ = $(BUILD_DIR)/nerd_http.o
+RUNTIME_MCP_SRC = $(SRC_DIR)/nerd_mcp.c
+RUNTIME_MCP_OBJ = $(BUILD_DIR)/nerd_mcp.o
 
 .PHONY: all clean debug test
 
@@ -59,11 +61,22 @@ test: $(BIN)
 	@echo "=== Tests Complete ==="
 
 # Build HTTP runtime library
-runtime: $(BUILD_DIR) $(RUNTIME_OBJ)
-	@echo "Built HTTP runtime: $(RUNTIME_OBJ)"
+runtime: $(BUILD_DIR) $(RUNTIME_HTTP_OBJ)
+	@echo "Built HTTP runtime: $(RUNTIME_HTTP_OBJ)"
 
-$(RUNTIME_OBJ): $(RUNTIME_SRC) | $(BUILD_DIR)
+$(RUNTIME_HTTP_OBJ): $(RUNTIME_HTTP_SRC) | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c -o $@ $<
+
+# Build MCP runtime library
+runtime-mcp: $(BUILD_DIR) $(RUNTIME_MCP_OBJ)
+	@echo "Built MCP runtime: $(RUNTIME_MCP_OBJ)"
+
+$(RUNTIME_MCP_OBJ): $(RUNTIME_MCP_SRC) | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+# Build all runtimes
+runtime-all: runtime runtime-mcp
+	@echo "Built all runtime libraries"
 
 # Compile and link to native executable (requires clang/LLVM)
 native: $(BIN)
@@ -74,8 +87,14 @@ native: $(BIN)
 # Compile with HTTP support (requires libcurl)
 native-http: $(BIN) runtime
 	./$(BIN) compile ../examples/http_test.nerd -o http_test.ll
-	clang http_test.ll $(RUNTIME_OBJ) -lcurl -o http_test
+	clang http_test.ll $(RUNTIME_HTTP_OBJ) -lcurl -o http_test
 	@echo "Built HTTP-enabled executable: http_test"
+
+# Compile with MCP support (requires libcurl)
+native-mcp: $(BIN) runtime runtime-mcp
+	./$(BIN) compile ../examples/mcp_test.nerd -o mcp_test.ll
+	clang mcp_test.ll $(RUNTIME_HTTP_OBJ) $(RUNTIME_MCP_OBJ) -lcurl -o mcp_test
+	@echo "Built MCP-enabled executable: mcp_test"
 
 # Install to /usr/local/bin
 install: $(BIN)

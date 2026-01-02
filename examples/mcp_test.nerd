@@ -1,0 +1,8 @@
+-- MCP in NERD
+
+out "Tools:"
+mcp tools "https://docs.mcp.cloudflare.com/mcp"
+
+out "Search:"
+mcp send "https://docs.mcp.cloudflare.com/mcp" "search_cloudflare_documentation" "{\"query\":\"Workers\"}"
+

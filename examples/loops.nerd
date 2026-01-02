@@ -1,5 +1,3 @@
--- Loops in NERD
-
 fn countdown n
 repeat n times as i
   out n minus i plus one

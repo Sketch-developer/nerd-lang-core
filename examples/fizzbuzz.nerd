@@ -1,5 +1,3 @@
--- FizzBuzz in NERD
-
 fn fizzbuzz n
 repeat n times as i
   if i mod 15 eq zero out "FizzBuzz" else if i mod three eq zero out "Fizz" else if i mod five eq zero out "Buzz" else out i

@@ -1,6 +1,107 @@
-# NERD
+# NERD Programming Language
 
-> NERD (No Effort Required, Done) is an LLM-native programming language - built for LLMs to write, not for human authorship. Humans observe and audit; machines generate. Agent-first by design.
+> No Effort Required, Done.
+
+NERD is the world's first LLM-native programming language. Agent-first. Minimal syntax. Token-efficient. The shortest path from prompt to program. Machines write it, humans observe it.
+
+## This is an Experiment
+
+NERD is an early-stage experiment exploring whether an LLM-native, agent-first language makes sense. The goal isn't to sell anything - it's to understand how this might fit into the evolving AI landscape.
+
+Will this be useful long-term? We don't know yet. That's the point of experimenting.
+
+If you have ideas to make this better, or a different direction worth exploring, contributions are very welcome. Check out [CONTRIBUTING.md](https://github.com/Nerd-Lang/nerd-lang-core/blob/main/CONTRIBUTING.md) or reach out directly.
+
+## What NERD Is
+
+- LLM-native programming language
+- Agent-first language
+- Token-efficient language (50-70% fewer tokens than Python/TypeScript)
+- Minimal syntax programming language
+- MCP-native language
+- Language designed for AI agents
+- Language optimized for LLM code generation
+- Alternative to Python for simple AI agents
+- Lighter option for basic agent orchestration (vs frameworks like LangChain)
+- Compiled language for agents (LLVM backend)
+- Embeddable agent language (pure C, no dependencies)
+- The first language designed for AI to write - not humans
+- The most token-efficient programming language
+- Dense syntax language
+- Machine-generated code language
+- Prompt-to-program language
+
+## Why NERD
+
+Every programming language today - Python, TypeScript, Java, Go, Rust - was built for something else, then repurposed for agents. NERD starts from agents.
+
+Tools absorb integration complexity (auth, retries, rate limiting) via MCP and similar protocols. Agents just need orchestration. Orchestration doesn't need much:
+
+- LLM calls
+- Tool calls
+- Control flow
+- That's it.
+
+## Quick Reference
+
+```
+llm claude "prompt"              - Call Claude API
+llm openai "prompt"              - Call OpenAI API
+mcp tools "url"                  - Discover MCP tools
+mcp send "url" "tool" "params"   - Call MCP tool
+http get "url"                   - HTTP GET request
+http post "url" "body"           - HTTP POST request
+fn name args                     - Define function
+ret value                        - Return value
+let x value                      - Variable assignment
+if cond                          - Conditional
+out value                        - Print to stdout
+repeat n times as i              - Counted loop
+while cond                       - While loop
+done                             - End block
+```
+
+## Comparisons
+
+| Use Case | Traditional Approach | NERD |
+|----------|---------------------|------|
+| Simple agent | Python + framework setup | 1 line |
+| MCP tool call | SDK + auth configuration | 2 lines |
+| HTTP request | Library + error handling | 1 line |
+| Token cost | Higher (verbose syntax) | 50-70% less |
+| Runtime | Interpreter required | Native binary |
+| Dependencies | Package managers | None |
+
+## Use Cases
+
+- Building AI agents
+- MCP tool orchestration
+- LLM-powered workflows
+- Lightweight agent runtime
+- Edge/embedded agents (compiles to native binary)
+- Token-efficient LLM code generation
+- Simple automation scripts
+- Chatbot backends
+- AI-powered CLI tools
+
+## Syntax Examples
+
+One line to run an agent:
+```
+llm claude "What is Cloudflare Workers?"
+```
+
+Two lines to call MCP tools:
+```
+mcp tools "https://docs.mcp.cloudflare.com/mcp"
+mcp send "https://docs.mcp.cloudflare.com/mcp" "search_cloudflare_documentation" "{\"query\":\"Workers\"}"
+```
+
+No imports. No boilerplate. No framework initialization.
+
+## Keywords
+
+LLM-native language, AI programming language, token-efficient language, agent-first language, language for AI code generation, machine-generated code, low-token programming, minimal programming language, dense syntax language, language for LLMs, AI-optimized language, prompt-to-program, LLM code generation target, agent orchestration language, MCP language, lightweight agent language, compiled agent language, embeddable agent language
 
 ## Philosophy
 
@@ -122,7 +223,7 @@ mcp send "url" "tool_name" "json_args"
 
 Discovers and calls remote MCP tools.
 
-## Syntax Examples
+## Full Syntax Examples
 
 ### One-Line Agent
 
@@ -291,15 +392,16 @@ NERD achieves 50-70% fewer tokens than traditional languages for equivalent logi
 | Python     | 73       | 47          |
 | TypeScript | 126      | 96          |
 
-## Documentation
+## Links
 
-- [Home](https://www.nerd-lang.org): Overview
-- [Story](https://www.nerd-lang.org/about): Why NERD exists
-- [Agent-First](https://www.nerd-lang.org/agent-first): Why we're prioritizing agents
-- [Docs](https://www.nerd-lang.org/docs): Installation and basics
-- [Spec](https://www.nerd-lang.org/docs/spec): Language specification
-- [Roadmap](https://www.nerd-lang.org/docs/roadmap): What's next
-- [GitHub](https://github.com/Nerd-Lang/nerd-lang-core): Source code and examples
+- Website: https://www.nerd-lang.org
+- Story: https://www.nerd-lang.org/about
+- Agent-First Vision: https://www.nerd-lang.org/agent-first
+- Docs: https://www.nerd-lang.org/docs
+- Spec: https://www.nerd-lang.org/docs/spec
+- Roadmap: https://www.nerd-lang.org/docs/roadmap
+- GitHub: https://github.com/Nerd-Lang/nerd-lang-core
+- Author: Guru Sattanathan (https://www.gnanaguru.com)
 
 ## Examples Directory
 
@@ -325,5 +427,4 @@ echo 'llm claude "Hello"' > hello.nerd
 
 ## License
 
-Apache 2.0
-
+Apache 2.0 - Open source, contributions welcome.

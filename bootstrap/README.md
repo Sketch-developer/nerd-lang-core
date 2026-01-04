@@ -43,14 +43,21 @@ clang -O2 combined.ll -o math
 bootstrap/
 ├── include/
 │   └── nerd.h          # All types, tokens, AST definitions
-├── src/
+├── src/                # Compiler core
 │   ├── lexer.c         # Tokenizer - English words to tokens
 │   ├── parser.c        # Parser - tokens to AST
 │   ├── codegen.c       # Code generator - AST to LLVM IR
 │   └── main.c          # CLI entry point
-├── Makefile            # Build system
-├── test_math.ll        # Test harness for math.nerd
-└── test_functions.ll   # Test harness for functions.nerd
+├── runtime/            # Runtime libraries
+│   ├── nerd_http.c     # HTTP module (libcurl)
+│   ├── nerd_json.c     # JSON module (cJSON wrapper)
+│   ├── nerd_json.h     # JSON API header
+│   ├── nerd_mcp.c      # MCP client
+│   └── nerd_llm.c      # LLM API client
+├── lib/                # Third-party libraries
+│   └── cjson/          # cJSON (MIT license)
+├── build/              # Compiled artifacts
+└── Makefile            # Build system
 ```
 
 ## Architecture
@@ -61,7 +68,7 @@ The compiler follows a traditional three-stage architecture:
 2. **Parser** - Builds an Abstract Syntax Tree from tokens
 3. **Codegen** - Generates LLVM IR from the AST
 
-All code is pure C with no dependencies except libc.
+The compiler is pure C with no dependencies except libc. Runtime libraries require libcurl for HTTP/MCP/LLM features.
 
 ## LLVM IR Output
 

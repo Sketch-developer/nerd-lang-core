@@ -96,23 +96,23 @@ if x lt zero ret neg x else ret x
 ## Quick Start (macOS Apple Silicon)
 
 ```bash
-# Download and install
+# Download and extract
 curl -L https://github.com/Nerd-Lang/nerd-lang-core/releases/latest/download/nerd-darwin-arm64.tar.gz | tar -xz
-sudo mv nerd-darwin-arm64 /usr/local/nerd
-export PATH="$PATH:/usr/local/nerd"
-
-# Add to shell profile for permanent access
-echo 'export PATH="$PATH:/usr/local/nerd"' >> ~/.zshrc
+cd nerd-darwin-arm64
 
 # Write a program
 echo 'out "Hello from NERD"
 out five plus three' > hello.nerd
 
 # Run it
-nerd run hello.nerd
+./nerd run hello.nerd
 # Output:
 # Hello from NERD
 # 8
+
+# Optional: Add to PATH for global access
+sudo mv ../nerd-darwin-arm64 /usr/local/nerd
+echo 'export PATH="$PATH:/usr/local/nerd"' >> ~/.zshrc
 ```
 
 The release includes all runtime libraries for HTTP, JSON, MCP, and LLM features.

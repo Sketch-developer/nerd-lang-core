@@ -114,6 +114,15 @@ nav .github-link:hover svg {
   fill: var(--text);
 }
 
+nav .github-star {
+  display: flex;
+  align-items: center;
+}
+
+nav .github-star iframe {
+  vertical-align: middle;
+}
+
 /* Main */
 main {
   max-width: 900px;

@@ -108,6 +108,16 @@ typedef enum {
     TOK_BEARER,     // bearer - bearer token
     TOK_BASIC,      // basic - basic auth
 
+    // MCP commands (natural English)
+    TOK_USE,        // use - use a tool
+    TOK_TOOLS,      // tools - list tools
+    TOK_RESOURCES,  // resources - list resources
+    TOK_READ,       // read - read a resource
+    TOK_PROMPTS,    // prompts - list prompts
+    TOK_PROMPT,     // prompt - get a prompt
+    TOK_INIT,       // init - initialize session
+    TOK_LOG,        // log - set log level
+
     // Literals and identifiers
     TOK_NUMBER,     // numeric literal
     TOK_STRING,     // string literal

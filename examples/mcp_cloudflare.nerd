@@ -1,0 +1,45 @@
+# Cloudflare MCP Server Example
+# ==============================
+# Cloudflare's documentation MCP server - NO authentication required!
+# This demonstrates all MCP capabilities with a real, working server.
+#
+# Available Cloudflare MCP servers:
+#   - https://docs.mcp.cloudflare.com/mcp    (Docs - FREE, no auth!)
+#   - https://radar.mcp.cloudflare.com/mcp   (Internet traffic - requires auth)
+#   - https://browser.mcp.cloudflare.com/mcp (Web fetching - requires auth)
+
+out "=== Cloudflare Docs MCP Demo ==="
+out "Free public MCP server - no authentication required"
+out ""
+
+# Initialize MCP session
+out "1. Initialize MCP session"
+mcp init "https://docs.mcp.cloudflare.com/mcp"
+
+# List available tools
+out ""
+out "2. List available tools"
+mcp tools "https://docs.mcp.cloudflare.com/mcp"
+
+# Use a tool - search Cloudflare documentation
+out ""
+out "3. Search Cloudflare docs for Workers AI"
+mcp use "https://docs.mcp.cloudflare.com/mcp" "search_cloudflare_documentation" "{\"query\":\"Workers AI getting started\"}"
+
+# List resources (may not be supported)
+out ""
+out "4. List resources"
+mcp resources "https://docs.mcp.cloudflare.com/mcp"
+
+# List prompts (may not be supported)
+out ""
+out "5. List prompts"
+mcp prompts "https://docs.mcp.cloudflare.com/mcp"
+
+# Set log level
+out ""
+out "6. Set log level"
+mcp log "https://docs.mcp.cloudflare.com/mcp" "info"
+
+out ""
+out "=== Demo complete ==="

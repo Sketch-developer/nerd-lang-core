@@ -937,6 +937,192 @@ static int codegen_expr(CodeGen *cg, ASTNode *node) {
                         fprintf(cg->out, "  %%t%d = fadd double 0.0, 0.0\n", result_reg);
                         return result_reg;
                     }
+
+                    // mcp use url tool_name args_json - use a tool (natural English alias for send)
+                    if (strcmp(node->data.call.func, "use") == 0 && node->data.call.args.count >= 3) {
+                        ASTNode *tool_node = node->data.call.args.nodes[1];
+                        ASTNode *args_node = node->data.call.args.nodes[2];
+
+                        if (url_node->type == NODE_STR && tool_node->type == NODE_STR && args_node->type == NODE_STR) {
+                            int url_idx = cg->string_counter++;
+                            int tool_idx = cg->string_counter++;
+                            int args_idx = cg->string_counter++;
+
+                            size_t url_len = actual_string_len(url_node->data.str.value) + 1;
+                            size_t tool_len = actual_string_len(tool_node->data.str.value) + 1;
+                            size_t args_len = actual_string_len(args_node->data.str.value) + 1;
+
+                            int url_ptr = next_temp(cg);
+                            fprintf(cg->out, "  %%t%d = getelementptr [%zu x i8], [%zu x i8]* @.str%d, i32 0, i32 0\n",
+                                    url_ptr, url_len, url_len, url_idx);
+
+                            int tool_ptr = next_temp(cg);
+                            fprintf(cg->out, "  %%t%d = getelementptr [%zu x i8], [%zu x i8]* @.str%d, i32 0, i32 0\n",
+                                    tool_ptr, tool_len, tool_len, tool_idx);
+
+                            int args_ptr = next_temp(cg);
+                            fprintf(cg->out, "  %%t%d = getelementptr [%zu x i8], [%zu x i8]* @.str%d, i32 0, i32 0\n",
+                                    args_ptr, args_len, args_len, args_idx);
+
+                            // Call mcp_use (alias for mcp_send)
+                            int response_ptr = next_temp(cg);
+                            fprintf(cg->out, "  %%t%d = call i8* @nerd_mcp_use(i8* %%t%d, i8* %%t%d, i8* %%t%d)\n",
+                                    response_ptr, url_ptr, tool_ptr, args_ptr);
+
+                            // Free response
+                            fprintf(cg->out, "  call void @nerd_mcp_free(i8* %%t%d)\n", response_ptr);
+                        }
+
+                        fprintf(cg->out, "  %%t%d = fadd double 0.0, 0.0\n", result_reg);
+                        return result_reg;
+                    }
+
+                    // mcp resources url - list available resources
+                    if (strcmp(node->data.call.func, "resources") == 0) {
+                        if (url_node->type == NODE_STR) {
+                            int url_idx = cg->string_counter++;
+                            size_t url_len = actual_string_len(url_node->data.str.value) + 1;
+
+                            int url_ptr = next_temp(cg);
+                            fprintf(cg->out, "  %%t%d = getelementptr [%zu x i8], [%zu x i8]* @.str%d, i32 0, i32 0\n",
+                                    url_ptr, url_len, url_len, url_idx);
+
+                            // Call mcp_resources
+                            int response_ptr = next_temp(cg);
+                            fprintf(cg->out, "  %%t%d = call i8* @nerd_mcp_resources(i8* %%t%d)\n", response_ptr, url_ptr);
+
+                            // Free response
+                            fprintf(cg->out, "  call void @nerd_mcp_free(i8* %%t%d)\n", response_ptr);
+                        }
+
+                        fprintf(cg->out, "  %%t%d = fadd double 0.0, 0.0\n", result_reg);
+                        return result_reg;
+                    }
+
+                    // mcp read url uri - read a resource
+                    if (strcmp(node->data.call.func, "read") == 0 && node->data.call.args.count >= 2) {
+                        ASTNode *uri_node = node->data.call.args.nodes[1];
+
+                        if (url_node->type == NODE_STR && uri_node->type == NODE_STR) {
+                            int url_idx = cg->string_counter++;
+                            int uri_idx = cg->string_counter++;
+
+                            size_t url_len = actual_string_len(url_node->data.str.value) + 1;
+                            size_t uri_len = actual_string_len(uri_node->data.str.value) + 1;
+
+                            int url_ptr = next_temp(cg);
+                            fprintf(cg->out, "  %%t%d = getelementptr [%zu x i8], [%zu x i8]* @.str%d, i32 0, i32 0\n",
+                                    url_ptr, url_len, url_len, url_idx);
+
+                            int uri_ptr = next_temp(cg);
+                            fprintf(cg->out, "  %%t%d = getelementptr [%zu x i8], [%zu x i8]* @.str%d, i32 0, i32 0\n",
+                                    uri_ptr, uri_len, uri_len, uri_idx);
+
+                            // Call mcp_read
+                            int response_ptr = next_temp(cg);
+                            fprintf(cg->out, "  %%t%d = call i8* @nerd_mcp_read(i8* %%t%d, i8* %%t%d)\n",
+                                    response_ptr, url_ptr, uri_ptr);
+
+                            // Free response
+                            fprintf(cg->out, "  call void @nerd_mcp_free(i8* %%t%d)\n", response_ptr);
+                        }
+
+                        fprintf(cg->out, "  %%t%d = fadd double 0.0, 0.0\n", result_reg);
+                        return result_reg;
+                    }
+
+                    // mcp prompts url - list available prompts
+                    if (strcmp(node->data.call.func, "prompts") == 0) {
+                        if (url_node->type == NODE_STR) {
+                            int url_idx = cg->string_counter++;
+                            size_t url_len = actual_string_len(url_node->data.str.value) + 1;
+
+                            int url_ptr = next_temp(cg);
+                            fprintf(cg->out, "  %%t%d = getelementptr [%zu x i8], [%zu x i8]* @.str%d, i32 0, i32 0\n",
+                                    url_ptr, url_len, url_len, url_idx);
+
+                            // Call mcp_prompts
+                            int response_ptr = next_temp(cg);
+                            fprintf(cg->out, "  %%t%d = call i8* @nerd_mcp_prompts(i8* %%t%d)\n", response_ptr, url_ptr);
+
+                            // Free response
+                            fprintf(cg->out, "  call void @nerd_mcp_free(i8* %%t%d)\n", response_ptr);
+                        }
+
+                        fprintf(cg->out, "  %%t%d = fadd double 0.0, 0.0\n", result_reg);
+                        return result_reg;
+                    }
+
+                    // mcp prompt url name args_json - get a prompt template
+                    if (strcmp(node->data.call.func, "prompt") == 0 && node->data.call.args.count >= 3) {
+                        ASTNode *name_node = node->data.call.args.nodes[1];
+                        ASTNode *args_node = node->data.call.args.nodes[2];
+
+                        if (url_node->type == NODE_STR && name_node->type == NODE_STR && args_node->type == NODE_STR) {
+                            int url_idx = cg->string_counter++;
+                            int name_idx = cg->string_counter++;
+                            int args_idx = cg->string_counter++;
+
+                            size_t url_len = actual_string_len(url_node->data.str.value) + 1;
+                            size_t name_len = actual_string_len(name_node->data.str.value) + 1;
+                            size_t args_len = actual_string_len(args_node->data.str.value) + 1;
+
+                            int url_ptr = next_temp(cg);
+                            fprintf(cg->out, "  %%t%d = getelementptr [%zu x i8], [%zu x i8]* @.str%d, i32 0, i32 0\n",
+                                    url_ptr, url_len, url_len, url_idx);
+
+                            int name_ptr = next_temp(cg);
+                            fprintf(cg->out, "  %%t%d = getelementptr [%zu x i8], [%zu x i8]* @.str%d, i32 0, i32 0\n",
+                                    name_ptr, name_len, name_len, name_idx);
+
+                            int args_ptr = next_temp(cg);
+                            fprintf(cg->out, "  %%t%d = getelementptr [%zu x i8], [%zu x i8]* @.str%d, i32 0, i32 0\n",
+                                    args_ptr, args_len, args_len, args_idx);
+
+                            // Call mcp_prompt
+                            int response_ptr = next_temp(cg);
+                            fprintf(cg->out, "  %%t%d = call i8* @nerd_mcp_prompt(i8* %%t%d, i8* %%t%d, i8* %%t%d)\n",
+                                    response_ptr, url_ptr, name_ptr, args_ptr);
+
+                            // Free response
+                            fprintf(cg->out, "  call void @nerd_mcp_free(i8* %%t%d)\n", response_ptr);
+                        }
+
+                        fprintf(cg->out, "  %%t%d = fadd double 0.0, 0.0\n", result_reg);
+                        return result_reg;
+                    }
+
+                    // mcp log url level - set logging level
+                    if (strcmp(node->data.call.func, "log") == 0 && node->data.call.args.count >= 2) {
+                        ASTNode *level_node = node->data.call.args.nodes[1];
+
+                        if (url_node->type == NODE_STR && level_node->type == NODE_STR) {
+                            int url_idx = cg->string_counter++;
+                            int level_idx = cg->string_counter++;
+
+                            size_t url_len = actual_string_len(url_node->data.str.value) + 1;
+                            size_t level_len = actual_string_len(level_node->data.str.value) + 1;
+
+                            int url_ptr = next_temp(cg);
+                            fprintf(cg->out, "  %%t%d = getelementptr [%zu x i8], [%zu x i8]* @.str%d, i32 0, i32 0\n",
+                                    url_ptr, url_len, url_len, url_idx);
+
+                            int level_ptr = next_temp(cg);
+                            fprintf(cg->out, "  %%t%d = getelementptr [%zu x i8], [%zu x i8]* @.str%d, i32 0, i32 0\n",
+                                    level_ptr, level_len, level_len, level_idx);
+
+                            // Call mcp_log
+                            int response_ptr = next_temp(cg);
+                            fprintf(cg->out, "  %%t%d = call i8* @nerd_mcp_log(i8* %%t%d, i8* %%t%d)\n",
+                                    response_ptr, url_ptr, level_ptr);
+
+                            // Free response
+                            fprintf(cg->out, "  call void @nerd_mcp_free(i8* %%t%d)\n", response_ptr);
+                        }
+
+                        fprintf(cg->out, "  %%t%d = fadd double 0.0, 0.0\n", result_reg);
+                        return result_reg;
+                    }
                 }
 
                 // Default for mcp module
@@ -1606,7 +1792,13 @@ bool codegen_llvm(NerdContext *ctx, const char *output_path) {
     // MCP runtime declarations
     fprintf(out, "declare i8* @nerd_mcp_list(i8*)\n");
     fprintf(out, "declare i8* @nerd_mcp_send(i8*, i8*, i8*)\n");
+    fprintf(out, "declare i8* @nerd_mcp_use(i8*, i8*, i8*)\n");
     fprintf(out, "declare i8* @nerd_mcp_init(i8*)\n");
+    fprintf(out, "declare i8* @nerd_mcp_resources(i8*)\n");
+    fprintf(out, "declare i8* @nerd_mcp_read(i8*, i8*)\n");
+    fprintf(out, "declare i8* @nerd_mcp_prompts(i8*)\n");
+    fprintf(out, "declare i8* @nerd_mcp_prompt(i8*, i8*, i8*)\n");
+    fprintf(out, "declare i8* @nerd_mcp_log(i8*, i8*)\n");
     fprintf(out, "declare void @nerd_mcp_free(i8*)\n");
     fprintf(out, "\n");
 

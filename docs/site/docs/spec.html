@@ -148,6 +148,53 @@ ret math sqrt asq plus bsq</code></pre>
         <pre><code>-- this is a comment
 # this too</code></pre>
 
+        <h2>Modules</h2>
+
+        <h3>MCP (Model Context Protocol)</h3>
+        <p>Three primitives: <strong>Tools</strong> (actions), <strong>Resources</strong> (data), <strong>Prompts</strong> (templates).</p>
+        <table class="comparison-table">
+          <tbody>
+            <tr><td><code>mcp tools "url"</code></td><td>List available tools</td></tr>
+            <tr><td><code>mcp use "url" "tool" "args"</code></td><td>Use a tool</td></tr>
+            <tr><td><code>mcp resources "url"</code></td><td>List available resources</td></tr>
+            <tr><td><code>mcp read "url" "uri"</code></td><td>Read a resource</td></tr>
+            <tr><td><code>mcp prompts "url"</code></td><td>List available prompts</td></tr>
+            <tr><td><code>mcp prompt "url" "name" "args"</code></td><td>Get a prompt template</td></tr>
+            <tr><td><code>mcp init "url"</code></td><td>Initialize session</td></tr>
+            <tr><td><code>mcp log "url" "level"</code></td><td>Set log level</td></tr>
+          </tbody>
+        </table>
+
+        <h3>HTTP</h3>
+        <table class="comparison-table">
+          <tbody>
+            <tr><td><code>http get "url"</code></td><td>GET request</td></tr>
+            <tr><td><code>http post "url" "body"</code></td><td>POST request</td></tr>
+            <tr><td><code>http put "url" "body"</code></td><td>PUT request</td></tr>
+            <tr><td><code>http delete "url"</code></td><td>DELETE request</td></tr>
+            <tr><td><code>http patch "url" "body"</code></td><td>PATCH request</td></tr>
+            <tr><td><code>... auth bearer "token"</code></td><td>Bearer auth</td></tr>
+            <tr><td><code>... auth basic "u" "p"</code></td><td>Basic auth</td></tr>
+          </tbody>
+        </table>
+
+        <h3>LLM</h3>
+        <table class="comparison-table">
+          <tbody>
+            <tr><td><code>llm claude "prompt"</code></td><td>Call Claude API</td></tr>
+          </tbody>
+        </table>
+
+        <h3>JSON</h3>
+        <table class="comparison-table">
+          <tbody>
+            <tr><td><code>let x {}</code></td><td>Create empty object</td></tr>
+            <tr><td><code>obj."path"</code></td><td>Access value</td></tr>
+            <tr><td><code>obj?"key"</code></td><td>Check if key exists</td></tr>
+            <tr><td><code>obj."key" = val</code></td><td>Set value</td></tr>
+          </tbody>
+        </table>
+
         <h2>Compilation</h2>
         <pre><code>NERD → Lexer → Parser → AST → LLVM IR → clang → native</code></pre>
 

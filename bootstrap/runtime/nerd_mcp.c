@@ -123,7 +123,8 @@ char* nerd_mcp_send(const char* url, const char* tool_name, const char* args_jso
 // Initialize an MCP session (optional for some servers)
 char* nerd_mcp_init(const char* url) {
     // JSON-RPC request for initialize
-    const char* request = "{\"jsonrpc\":\"2.0\",\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2024-11-05\",\"capabilities\":{},\"clientInfo\":{\"name\":\"nerd\",\"version\":\"0.1.0\"}},\"id\":0}";
+    // Protocol version 2025-03-26 is the latest stable version
+    const char* request = "{\"jsonrpc\":\"2.0\",\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-03-26\",\"capabilities\":{\"tools\":{},\"resources\":{},\"prompts\":{},\"logging\":{}},\"clientInfo\":{\"name\":\"nerd\",\"version\":\"0.1.3\"}},\"id\":0}";
     
     char* response = mcp_post(url, request);
     
@@ -132,6 +133,122 @@ char* nerd_mcp_init(const char* url) {
     }
     
     return response;
+}
+
+// List available resources from an MCP server
+// Returns JSON response (caller must free)
+char* nerd_mcp_resources(const char* url) {
+    // JSON-RPC request for resources/list
+    const char* request = "{\"jsonrpc\":\"2.0\",\"method\":\"resources/list\",\"id\":3}";
+    
+    char* response = mcp_post(url, request);
+    
+    if (response) {
+        printf("%s\n", response);
+    }
+    
+    return response;
+}
+
+// Read a resource from an MCP server
+// Returns JSON response (caller must free)
+char* nerd_mcp_read(const char* url, const char* uri) {
+    // JSON-RPC request for resources/read
+    // Format: {"jsonrpc":"2.0","method":"resources/read","params":{"uri":"..."},"id":4}
+    
+    size_t request_size = 128 + strlen(uri);
+    char* request = malloc(request_size);
+    if (!request) {
+        fprintf(stderr, "MCP: failed to allocate request buffer\n");
+        return NULL;
+    }
+    
+    snprintf(request, request_size,
+        "{\"jsonrpc\":\"2.0\",\"method\":\"resources/read\",\"params\":{\"uri\":\"%s\"},\"id\":4}",
+        uri);
+    
+    char* response = mcp_post(url, request);
+    free(request);
+    
+    if (response) {
+        printf("%s\n", response);
+    }
+    
+    return response;
+}
+
+// List available prompts from an MCP server
+// Returns JSON response (caller must free)
+char* nerd_mcp_prompts(const char* url) {
+    // JSON-RPC request for prompts/list
+    const char* request = "{\"jsonrpc\":\"2.0\",\"method\":\"prompts/list\",\"id\":5}";
+    
+    char* response = mcp_post(url, request);
+    
+    if (response) {
+        printf("%s\n", response);
+    }
+    
+    return response;
+}
+
+// Get a prompt from an MCP server
+// Returns JSON response (caller must free)
+char* nerd_mcp_prompt(const char* url, const char* name, const char* args_json) {
+    // JSON-RPC request for prompts/get
+    // Format: {"jsonrpc":"2.0","method":"prompts/get","params":{"name":"...","arguments":{...}},"id":6}
+    
+    size_t request_size = 128 + strlen(name) + strlen(args_json);
+    char* request = malloc(request_size);
+    if (!request) {
+        fprintf(stderr, "MCP: failed to allocate request buffer\n");
+        return NULL;
+    }
+    
+    snprintf(request, request_size,
+        "{\"jsonrpc\":\"2.0\",\"method\":\"prompts/get\",\"params\":{\"name\":\"%s\",\"arguments\":%s},\"id\":6}",
+        name, args_json);
+    
+    char* response = mcp_post(url, request);
+    free(request);
+    
+    if (response) {
+        printf("%s\n", response);
+    }
+    
+    return response;
+}
+
+// Set logging level on an MCP server
+// level can be: "debug", "info", "notice", "warning", "error", "critical", "alert", "emergency"
+char* nerd_mcp_log(const char* url, const char* level) {
+    // JSON-RPC request for logging/setLevel
+    // Format: {"jsonrpc":"2.0","method":"logging/setLevel","params":{"level":"..."},"id":7}
+    
+    size_t request_size = 128 + strlen(level);
+    char* request = malloc(request_size);
+    if (!request) {
+        fprintf(stderr, "MCP: failed to allocate request buffer\n");
+        return NULL;
+    }
+    
+    snprintf(request, request_size,
+        "{\"jsonrpc\":\"2.0\",\"method\":\"logging/setLevel\",\"params\":{\"level\":\"%s\"},\"id\":7}",
+        level);
+    
+    char* response = mcp_post(url, request);
+    free(request);
+    
+    if (response) {
+        printf("%s\n", response);
+    }
+    
+    return response;
+}
+
+// Alias: use a tool (same as send, more natural English)
+char* nerd_mcp_use(const char* url, const char* tool_name, const char* args_json) {
+    return nerd_mcp_send(url, tool_name, args_json);
 }
 
 // Free memory allocated by MCP functions

@@ -101,6 +101,16 @@ static const Keyword keywords[] = {
     {"bearer", TOK_BEARER},
     {"basic", TOK_BASIC},
 
+    // MCP commands (natural English)
+    {"use", TOK_USE},
+    {"tools", TOK_TOOLS},
+    {"resources", TOK_RESOURCES},
+    {"read", TOK_READ},
+    {"prompts", TOK_PROMPTS},
+    {"prompt", TOK_PROMPT},
+    {"init", TOK_INIT},
+    {"log", TOK_LOG},
+
     {NULL, TOK_EOF}
 };
 

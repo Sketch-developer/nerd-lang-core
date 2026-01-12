@@ -506,9 +506,26 @@ static ASTNode *parse_call(Parser *parser) {
                 fprintf(stderr, "Error at line %d: Expected HTTP method (get, post, put, delete, patch)\n", line);
                 return NULL;
             }
+        }
+        // MCP module: accept MCP command tokens or identifiers
+        else if (strcmp(mod_tok->value, "mcp") == 0) {
+            TokenType t = parser_current(parser)->type;
+            if (t == TOK_TOOLS) { func_name = "tools"; parser_advance(parser); }
+            else if (t == TOK_USE) { func_name = "use"; parser_advance(parser); }
+            else if (t == TOK_RESOURCES) { func_name = "resources"; parser_advance(parser); }
+            else if (t == TOK_READ) { func_name = "read"; parser_advance(parser); }
+            else if (t == TOK_PROMPTS) { func_name = "prompts"; parser_advance(parser); }
+            else if (t == TOK_PROMPT) { func_name = "prompt"; parser_advance(parser); }
+            else if (t == TOK_INIT) { func_name = "init"; parser_advance(parser); }
+            else if (t == TOK_LOG) { func_name = "log"; parser_advance(parser); }
+            else if (t == TOK_IDENT) { func_name = parser_advance(parser)->value; }
+            else {
+                fprintf(stderr, "Error at line %d: Expected MCP command (tools, use, resources, read, prompts, prompt, init, log)\n", line);
+                return NULL;
+            }
         } else {
-            Token *func_tok = parser_expect(parser, TOK_IDENT, "Expected function name after module");
-            if (!func_tok) return NULL;
+        Token *func_tok = parser_expect(parser, TOK_IDENT, "Expected function name after module");
+        if (!func_tok) return NULL;
             func_name = func_tok->value;
         }
 
@@ -933,8 +950,8 @@ static ASTNode *parse_stmt(Parser *parser) {
                 if (!stmt) {
                     ast_free(node);
                     ast_free(then_block);
-                    return NULL;
-                }
+            return NULL;
+        }
                 ast_list_push(&then_block->data.program.functions, stmt);
                 parser_skip_newlines(parser);
             }
@@ -956,7 +973,7 @@ static ASTNode *parse_stmt(Parser *parser) {
 
             // Check for else
             if (parser_match(parser, TOK_ELSE)) {
-                parser_match(parser, TOK_NEWLINE);
+        parser_match(parser, TOK_NEWLINE);
                 parser_skip_newlines(parser);
 
                 // Check if else if
@@ -1041,10 +1058,10 @@ static ASTNode *parse_stmt(Parser *parser) {
             ASTNode *json_new = ast_create(NODE_JSON_NEW, line);
             node->data.let.value = json_new;
         } else {
-            node->data.let.value = parse_expr(parser);
-            if (!node->data.let.value) {
-                ast_free(node);
-                return NULL;
+        node->data.let.value = parse_expr(parser);
+        if (!node->data.let.value) {
+            ast_free(node);
+            return NULL;
             }
         }
 
@@ -1319,8 +1336,8 @@ ASTNode *parser_parse(Parser *parser) {
             ASTNode *stmt = parse_stmt(parser);
             if (!stmt) {
                 ast_list_free(&top_level_stmts);
-                ast_free(program);
-                return NULL;
+            ast_free(program);
+            return NULL;
             }
             ast_list_push(&top_level_stmts, stmt);
         }

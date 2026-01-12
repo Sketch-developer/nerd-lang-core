@@ -47,8 +47,14 @@ Tools absorb integration complexity (auth, retries, rate limiting) via MCP and s
 ```
 llm claude "prompt"              - Call Claude API
 llm openai "prompt"              - Call OpenAI API
-mcp tools "url"                  - Discover MCP tools
-mcp send "url" "tool" "params"   - Call MCP tool
+mcp tools "url"                  - List MCP tools
+mcp use "url" "tool" "args"      - Use an MCP tool
+mcp resources "url"              - List MCP resources
+mcp read "url" "uri"             - Read an MCP resource
+mcp prompts "url"                - List MCP prompts
+mcp prompt "url" "name" "args"   - Get an MCP prompt
+mcp init "url"                   - Initialize MCP session
+mcp log "url" "level"            - Set MCP log level
 http get "url"                   - HTTP GET (returns JSON)
 http post "url" "body"           - HTTP POST (returns JSON)
 http put "url" "body"            - HTTP PUT (returns JSON)
@@ -102,10 +108,10 @@ One line to run an agent:
 llm claude "What is Cloudflare Workers?"
 ```
 
-Two lines to call MCP tools:
+Two lines to use MCP tools:
 ```
 mcp tools "https://docs.mcp.cloudflare.com/mcp"
-mcp send "https://docs.mcp.cloudflare.com/mcp" "search_cloudflare_documentation" "{\"query\":\"Workers\"}"
+mcp use "https://docs.mcp.cloudflare.com/mcp" "search_cloudflare_documentation" "{\"query\":\"Workers\"}"
 ```
 
 JSON from HTTP - auto-parsed:
@@ -247,14 +253,51 @@ http get "url" auth bearer "token123"
 http get "url" auth basic "username" "password"
 ```
 
-### MCP Tool Calls
+### MCP (Model Context Protocol)
 
+MCP has three primitives: **Tools** (actions), **Resources** (data), and **Prompts** (templates).
+
+#### Tools - Actions the server can perform
 ```
-mcp tools "url"
-mcp send "url" "tool_name" "json_args"
+mcp tools "url"                      # List available tools
+mcp use "url" "tool_name" "args"     # Use a tool
 ```
 
-Discovers and calls remote MCP tools.
+Example:
+```
+mcp tools "https://mcp.arcade.ai"
+mcp use "https://mcp.arcade.ai" "web_search" "{\"query\":\"NERD lang\"}"
+```
+
+#### Resources - Data the server can provide
+```
+mcp resources "url"                  # List available resources
+mcp read "url" "resource://uri"      # Read a resource
+```
+
+Example:
+```
+mcp resources "https://mcp.server.com"
+mcp read "https://mcp.server.com" "file:///config.json"
+```
+
+#### Prompts - Pre-built prompt templates
+```
+mcp prompts "url"                    # List available prompts
+mcp prompt "url" "name" "args"       # Get a prompt template
+```
+
+Example:
+```
+mcp prompts "https://mcp.server.com"
+mcp prompt "https://mcp.server.com" "summarize" "{\"style\":\"brief\"}"
+```
+
+#### Session Management
+```
+mcp init "url"                       # Initialize session (optional)
+mcp log "url" "level"                # Set log level (debug/info/warn/error)
+```
 
 ## Full Syntax Examples
 
@@ -264,11 +307,11 @@ Discovers and calls remote MCP tools.
 llm claude "What is Cloudflare Workers? One sentence."
 ```
 
-### MCP Tool Discovery and Call
+### MCP Tool Discovery and Use
 
 ```
 mcp tools "https://docs.mcp.cloudflare.com/mcp"
-mcp send "https://docs.mcp.cloudflare.com/mcp" "search_cloudflare_documentation" "{\"query\":\"Workers\"}"
+mcp use "https://docs.mcp.cloudflare.com/mcp" "search_cloudflare_documentation" "{\"query\":\"Workers\"}"
 ```
 
 ### HTTP Requests

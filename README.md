@@ -174,7 +174,13 @@ clang -O2 loops.ll -o loops
 | Basic Auth | `http get "url" auth basic "user" "pass"` | ✓ Done |
 | LLM (Claude) | `llm claude "prompt"` | ✓ Done |
 | MCP Tools | `mcp tools "url"` | ✓ Done |
-| MCP Call | `mcp send "url" "tool" "args"` | ✓ Done |
+| MCP Use | `mcp use "url" "tool" "args"` | ✓ Done |
+| MCP Resources | `mcp resources "url"` | ✓ Done |
+| MCP Read | `mcp read "url" "uri"` | ✓ Done |
+| MCP Prompts | `mcp prompts "url"` | ✓ Done |
+| MCP Prompt | `mcp prompt "url" "name" "args"` | ✓ Done |
+| MCP Init | `mcp init "url"` | ✓ Done |
+| MCP Log | `mcp log "url" "level"` | ✓ Done |
 | .env support | Auto-loads `ANTHROPIC_API_KEY` | ✓ Done |
 | JSON Access | `obj."path"`, `obj?"key"` | ✓ Done |
 | JSON Create | `let x {}`, `x."key" = val` | ✓ Done |

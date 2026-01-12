@@ -53,6 +53,7 @@
           .status-later { color: var(--text-dim); }
         </style>
 
+        <h3 style="margin-top: 2rem; color: var(--text);">Phase 1: Foundation</h3>
         <table class="roadmap-table">
           <thead>
             <tr>
@@ -65,20 +66,73 @@
             <tr><td>LLVM IR generation, native compilation via clang</td><td class="status-done">✓ Done</td></tr>
             <tr><td>User-defined functions, Math module</td><td class="status-done">✓ Done</td></tr>
             <tr><td>Control flow (if/else, loops, counters)</td><td class="status-done">✓ Done</td></tr>
+            <tr><td>Implicit main, .env file support</td><td class="status-done">✓ Done</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="margin-top: 2rem; color: var(--text);">Phase 2: Agent Capabilities</h3>
+        <table class="roadmap-table">
+          <thead>
+            <tr>
+              <th>Capability</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
             <tr><td>HTTP module - GET, POST, PUT, DELETE, PATCH</td><td class="status-done">✓ Done</td></tr>
             <tr><td>HTTP custom headers, Bearer auth, Basic auth</td><td class="status-done">✓ Done</td></tr>
             <tr><td>LLM module - Claude API calls</td><td class="status-done">✓ Done</td></tr>
-            <tr><td>MCP support - Remote tool discovery and execution</td><td class="status-done">✓ Done</td></tr>
-            <tr><td>Implicit main, .env file support</td><td class="status-done">✓ Done</td></tr>
             <tr><td>JSON parsing and manipulation (cJSON)</td><td class="status-done">✓ Done</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="margin-top: 2rem; color: var(--text);">Phase 3: MCP Client</h3>
+        <table class="roadmap-table">
+          <thead>
+            <tr>
+              <th>Capability</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>MCP Tools - list and use tools</td><td class="status-done">✓ Done</td></tr>
+            <tr><td>MCP Resources - list and read resources</td><td class="status-done">✓ Done</td></tr>
+            <tr><td>MCP Prompts - list and get prompt templates</td><td class="status-done">✓ Done</td></tr>
+            <tr><td>MCP Logging - set log levels</td><td class="status-done">✓ Done</td></tr>
+            <tr><td>Protocol version 2025-03-26</td><td class="status-done">✓ Done</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="margin-top: 2rem; color: var(--text);">Phase 4: Enhanced Capabilities</h3>
+        <table class="roadmap-table">
+          <thead>
+            <tr>
+              <th>Capability</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
             <tr><td>OAuth 2.1 for MCP authentication</td><td class="status-next">Coming next</td></tr>
+            <tr><td>SSE / HTTP streaming for real-time responses</td><td class="status-next">Coming next</td></tr>
+            <tr><td>OpenAI API support (GPT-4, etc.)</td><td class="status-next">Coming next</td></tr>
             <tr><td>String operations (concat, split, extract)</td><td class="status-next">Coming next</td></tr>
-            <tr><td>SSE / HTTP streaming</td><td class="status-next">Coming next</td></tr>
-            <tr><td>OpenAI API support</td><td class="status-next">Coming next</td></tr>
-            <tr><td>Conversation state / multi-turn</td><td class="status-next">Coming next</td></tr>
-            <tr><td>Human View generator</td><td class="status-later">More to explore</td></tr>
-            <tr><td>Context storage, long-term memory</td><td class="status-later">More to explore</td></tr>
-            <tr><td>WASM target, IDE support</td><td class="status-later">More to explore</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="margin-top: 2rem; color: var(--text);">Future Exploration</h3>
+        <table class="roadmap-table">
+          <thead>
+            <tr>
+              <th>Capability</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Conversation state / multi-turn dialogs</td><td class="status-later">Exploring</td></tr>
+            <tr><td>Human View generator (NERD → readable code)</td><td class="status-later">Exploring</td></tr>
+            <tr><td>Context storage, long-term memory</td><td class="status-later">Exploring</td></tr>
+            <tr><td>WASM target for browser/edge</td><td class="status-later">Exploring</td></tr>
+            <tr><td>IDE support (syntax highlighting, LSP)</td><td class="status-later">Exploring</td></tr>
           </tbody>
         </table>
 

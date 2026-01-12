@@ -201,26 +201,95 @@ ret a plus b</code></pre>
         </div>
       </div>
 
-      <!-- Tools -->
+      <!-- MCP -->
       <div class="category">
-        <h2>Tools</h2>
+        <h2>MCP (Model Context Protocol)</h2>
         
-        <div class="recipe-card" data-prompt="List all available tools from the Cloudflare MCP server">
+        <div class="recipe-card" data-prompt="List all available tools from an MCP server">
           <div class="recipe-grid">
             <div class="recipe-prompt">
               <div class="recipe-label">Prompt</div>
-              <p class="prompt-text">"List all available tools from the Cloudflare MCP server. <span class="llm-link">Use https://nerd-lang.org/llms.txt for syntax.</span>"</p>
+              <p class="prompt-text">"List all available tools from an MCP server. <span class="llm-link">Use https://nerd-lang.org/llms.txt for syntax.</span>"</p>
             </div>
             <div class="recipe-code">
               <div class="file-header">
                 <span class="file-icon">📄</span>
                 <span class="file-name">tools.nerd</span>
               </div>
-              <pre><code>mcp tools "https://docs.mcp.cloudflare.com/mcp"</code></pre>
+              <pre><code>mcp tools "https://mcp.example.com"</code></pre>
+            </div>
+          </div>
+          <div class="recipe-footer">
+            <span class="recipe-stats">1 line · 4 tokens</span>
+            <div class="recipe-actions">
+              <label class="include-link"><input type="checkbox" checked onchange="toggleLink(this)"> Include llms.txt</label>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy Prompt</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="recipe-card" data-prompt="Use the web_search tool from an MCP server">
+          <div class="recipe-grid">
+            <div class="recipe-prompt">
+              <div class="recipe-label">Prompt</div>
+              <p class="prompt-text">"Use the web_search tool from an MCP server. <span class="llm-link">Use https://nerd-lang.org/llms.txt for syntax.</span>"</p>
+            </div>
+            <div class="recipe-code">
+              <div class="file-header">
+                <span class="file-icon">📄</span>
+                <span class="file-name">use_tool.nerd</span>
+              </div>
+              <pre><code>mcp use "https://mcp.example.com" "web_search" "{\"query\":\"NERD lang\"}"</code></pre>
+            </div>
+          </div>
+          <div class="recipe-footer">
+            <span class="recipe-stats">1 line · 6 tokens</span>
+            <div class="recipe-actions">
+              <label class="include-link"><input type="checkbox" checked onchange="toggleLink(this)"> Include llms.txt</label>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy Prompt</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="recipe-card" data-prompt="Read a config file from an MCP resource">
+          <div class="recipe-grid">
+            <div class="recipe-prompt">
+              <div class="recipe-label">Prompt</div>
+              <p class="prompt-text">"Read a config file from an MCP resource. <span class="llm-link">Use https://nerd-lang.org/llms.txt for syntax.</span>"</p>
+            </div>
+            <div class="recipe-code">
+              <div class="file-header">
+                <span class="file-icon">📄</span>
+                <span class="file-name">read_resource.nerd</span>
+              </div>
+              <pre><code>mcp read "https://mcp.example.com" "file:///config.json"</code></pre>
             </div>
           </div>
           <div class="recipe-footer">
             <span class="recipe-stats">1 line · 5 tokens</span>
+            <div class="recipe-actions">
+              <label class="include-link"><input type="checkbox" checked onchange="toggleLink(this)"> Include llms.txt</label>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy Prompt</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="recipe-card" data-prompt="Get a summarize prompt template from an MCP server">
+          <div class="recipe-grid">
+            <div class="recipe-prompt">
+              <div class="recipe-label">Prompt</div>
+              <p class="prompt-text">"Get a summarize prompt template from an MCP server. <span class="llm-link">Use https://nerd-lang.org/llms.txt for syntax.</span>"</p>
+            </div>
+            <div class="recipe-code">
+              <div class="file-header">
+                <span class="file-icon">📄</span>
+                <span class="file-name">get_prompt.nerd</span>
+              </div>
+              <pre><code>mcp prompt "https://mcp.example.com" "summarize" "{\"style\":\"brief\"}"</code></pre>
+            </div>
+          </div>
+          <div class="recipe-footer">
+            <span class="recipe-stats">1 line · 6 tokens</span>
             <div class="recipe-actions">
               <label class="include-link"><input type="checkbox" checked onchange="toggleLink(this)"> Include llms.txt</label>
               <button class="copy-btn" onclick="copyPrompt(this)">Copy Prompt</button>

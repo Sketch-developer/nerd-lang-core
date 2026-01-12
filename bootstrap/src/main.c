@@ -121,6 +121,14 @@ static const char *token_name(TokenType type) {
         case TOK_AUTH: return "AUTH";
         case TOK_BEARER: return "BEARER";
         case TOK_BASIC: return "BASIC";
+        case TOK_USE: return "USE";
+        case TOK_TOOLS: return "TOOLS";
+        case TOK_RESOURCES: return "RESOURCES";
+        case TOK_READ: return "READ";
+        case TOK_PROMPTS: return "PROMPTS";
+        case TOK_PROMPT: return "PROMPT";
+        case TOK_INIT: return "INIT";
+        case TOK_LOG: return "LOG";
         case TOK_COUNT: return "COUNT";
         case TOK_LBRACE: return "LBRACE";
         case TOK_RBRACE: return "RBRACE";

